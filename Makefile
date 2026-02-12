@@ -1,6 +1,9 @@
 include .env
 export
 
+# Use 'docker compose' (v2 plugin) if available, otherwise fall back to 'docker-compose' (v1)
+COMPOSE := $(shell docker compose version >/dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
+
 .PHONY: init up user
 
 # Install Docker and Docker Compose via apt (Ubuntu)
@@ -53,7 +56,7 @@ _generate-synapse-config:
 
 _start:
 	@echo "Starting services..."
-	@docker compose up -d
+	@$(COMPOSE) up -d
 	@echo "Matrix is up"
 
 # Add a new user (interactive). Optional: make user USERNAME=alice PASSWORD=secret ADMIN=yes
