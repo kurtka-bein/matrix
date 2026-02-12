@@ -3,14 +3,18 @@ export
 
 .PHONY: init up user
 
-# Install Docker and Docker Compose plugin via apt (Ubuntu)
+# Install Docker and Docker Compose via apt (Ubuntu)
 init:
 	@command -v docker >/dev/null 2>&1 || { \
 		echo "Installing Docker..."; \
 		sudo apt-get update -qq; \
-		sudo apt-get install -y docker.io docker-compose-plugin; \
+		sudo apt-get install -y docker.io; \
 		sudo usermod -aG docker $$USER; \
 		echo "Docker installed. Re-login or run: newgrp docker"; \
+	}
+	@docker compose version >/dev/null 2>&1 || command -v docker-compose >/dev/null 2>&1 || { \
+		echo "Installing Docker Compose..."; \
+		sudo apt-get install -y docker-compose-plugin 2>/dev/null || sudo apt-get install -y docker-compose; \
 	}
 	@test -f .env || { \
 		cp .env.example .env; \
