@@ -1,0 +1,25 @@
+{$MATRIX_HOST} {
+  reverse_proxy synapse:8008
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  }
+}
+
+{$CHAT_HOST} {
+  reverse_proxy element-web:80
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  }
+}
+
+{$SERVER_NAME} {
+
+  header Content-Type "application/json; charset=utf-8"
+
+  respond /.well-known/matrix/client `{"m.homeserver":{"base_url":"https://{$MATRIX_HOST}"}}` 200
+  respond /.well-known/matrix/server `{"m.server":"{$MATRIX_HOST}:443"}` 200
+
+  respond "ok" 200
+}

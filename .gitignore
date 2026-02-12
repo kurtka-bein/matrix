@@ -1,0 +1,10 @@
+.env
+
+# Generated from environment variables
+element-config.json
+
+# Synapse data and keys
+data/
+
+# PostgreSQL data
+postgres/
