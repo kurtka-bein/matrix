@@ -1,6 +1,9 @@
 include .env
 export
 
+# Run each recipe in a single shell (required for heredoc support)
+.ONESHELL:
+
 # Use 'docker compose' (v2 plugin) if available, otherwise fall back to 'docker-compose' (v1)
 COMPOSE := $(shell docker compose version >/dev/null 2>&1 && echo "docker compose" || echo "docker-compose")
 
@@ -30,17 +33,19 @@ up: _generate-element-config _generate-synapse-config _start
 
 _generate-element-config:
 	@echo "Generating element-config.json..."
-	@printf '{\n\
-	  "default_server_config": {\n\
-	    "m.homeserver": {\n\
-	      "base_url": "https://$(MATRIX_HOST)",\n\
-	      "server_name": "$(SERVER_NAME)"\n\
-	    }\n\
-	  },\n\
-	  "disable_custom_urls": true,\n\
-	  "disable_guests": true,\n\
-	  "brand": "$(ELEMENT_BRAND)"\n\
-	}\n' > element-config.json
+	@cat > element-config.json <<- EOF
+	{
+	  "default_server_config": {
+	    "m.homeserver": {
+	      "base_url": "https://$(MATRIX_HOST)",
+	      "server_name": "$(SERVER_NAME)"
+	    }
+	  },
+	  "disable_custom_urls": true,
+	  "disable_guests": true,
+	  "brand": "$(ELEMENT_BRAND)"
+	}
+	EOF
 
 _generate-synapse-config:
 	@echo "Setting up Synapse config..."
