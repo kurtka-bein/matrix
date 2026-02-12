@@ -18,7 +18,7 @@ Ubuntu server with `make` and `sudo` access. Everything else is installed via `m
 ## Quick start
 
 ```bash
-git clone <repo> && cd matrix
+git clone https://github.com/kurtka-bein/matrix.git && cd matrix
 make init          # install Docker
 cp .env.example .env && nano .env
 make up            # configure and start
